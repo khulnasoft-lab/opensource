@@ -1,0 +1,88 @@
+# Publish subdirectories of this monorepo to standalone repositories
+
+name: publish-repos
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
+  cancel-in-progress: true
+
+on:
+  workflow_dispatch: # We can trigger the workflow manually
+
+  push:
+    branches:
+      - main # When we merge to main
+    tags:
+      - "**" # If we added a tag (used for releases)
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  go-tests:
+    uses: ./.github/workflows/monorepo-go.yml
+  publish-repos:
+    # Only publish if tests pass. Right now all tests for all repos need to pass, but as the monorepo
+    # gets larger, we might want to change this so that we treat each subrepo independently.
+    needs: go-tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.CODEBOT_SSH_KEY }}
+      - uses: ./action-publish-code
+        with:
+          origin: ${{ github.repository }}
+          # TODO: consider changing this action so that instead of listing the targets, it
+          # automatically scans all subdirectories and looks for a config file stating where
+          # that subdirectory should be published. If the config file lives in the subdir,
+          # the monorepo can be refactored and publishing still works. As things are today,
+          # if you relocate a subdirectory within the monorepo, you need to update this
+          # yaml for things to continue to work.
+          targets: >
+            envsec
+            nixtest
+            pkg
+            typeid/typeid
+            typeid/typeid-go
+            typeid/typeid-sql
+            typeid/typeid-js
+            tyson
+
+  create-dependency-update-pr:
+    needs: publish-repos
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sleep 10s to ensure latest repos get pulled
+        run: sleep 10s
+
+      - name: Checkout Monorepo
+        uses: actions/checkout@v3
+
+      - name: Install devbox
+        uses: jetpack-io/devbox-install-action@v0.7.0
+        with:
+          enable-cache: true
+
+      - name: Mount golang cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/golangci-lint
+            ~/.cache/go-build
+            ~/go/pkg
+          key: ${{ runner.os }}-${{ hashFiles('**/*.sum') }}
+
+      - name: Update Dependencies
+        run: devbox run update-internal-deps
+  
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          title: Update Internal Dependencies
+          reviewers: 'loreto,mikeland73'
+          base: main
