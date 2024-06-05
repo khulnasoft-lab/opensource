@@ -5,7 +5,7 @@ go 1.21
 toolchain go1.22.1
 
 require (
-	github.com/dop251/goja v0.0.0-20240220182346-e401ed450204
+	github.com/dop251/goja v0.0.0-20240516125602-ccbae20bcec2
 	github.com/evanw/esbuild v0.20.2
 	github.com/fatih/color v1.16.0
 	github.com/hokaccha/go-prettyjson v0.0.0-20211117102719-0474bc63780f
