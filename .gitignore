@@ -1,0 +1,3 @@
+# ignore files by Jetbrains IDEs
+*.idea
+bin/
