@@ -1,0 +1,135 @@
+/* eslint-disable no-bitwise */
+const alphabet: string = "0123456789abcdefghjkmnpqrstvwxyz";
+
+// Decoding table
+const dec: Uint8Array = new Uint8Array([
+  0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+  0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+  0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+  0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0x01, 0x02, 0x03,
+  0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+  0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+  0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+  0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10,
+  0x11, 0xff, 0x12, 0x13, 0xff, 0x14, 0x15, 0xff, 0x16, 0x17, 0x18, 0x19, 0x1a,
+  0xff, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+  0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+  0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+  0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+  0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+  0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+  0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+  0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+  0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+  0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+  0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+]);
+
+export function encode(src: Uint8Array): string {
+  const dst: string[] = new Array(26).fill("");
+
+  if (src.length !== 16) {
+    throw new Error(
+      `Invalid length. Expected 16 bytes, got ${src.length}. Input: ${src}`
+    );
+  }
+
+  // 10 byte timestamp
+  dst[0] = alphabet[(src[0] & 224) >> 5];
+  dst[1] = alphabet[src[0] & 31];
+  dst[2] = alphabet[(src[1] & 248) >> 3];
+  dst[3] = alphabet[((src[1] & 7) << 2) | ((src[2] & 192) >> 6)];
+  dst[4] = alphabet[(src[2] & 62) >> 1];
+  dst[5] = alphabet[((src[2] & 1) << 4) | ((src[3] & 240) >> 4)];
+  dst[6] = alphabet[((src[3] & 15) << 1) | ((src[4] & 128) >> 7)];
+  dst[7] = alphabet[(src[4] & 124) >> 2];
+  dst[8] = alphabet[((src[4] & 3) << 3) | ((src[5] & 224) >> 5)];
+  dst[9] = alphabet[src[5] & 31];
+
+  // 16 bytes of randomness
+  dst[10] = alphabet[(src[6] & 248) >> 3];
+  dst[11] = alphabet[((src[6] & 7) << 2) | ((src[7] & 192) >> 6)];
+  dst[12] = alphabet[(src[7] & 62) >> 1];
+  dst[13] = alphabet[((src[7] & 1) << 4) | ((src[8] & 240) >> 4)];
+  dst[14] = alphabet[((src[8] & 15) << 1) | ((src[9] & 128) >> 7)];
+  dst[15] = alphabet[(src[9] & 124) >> 2];
+  dst[16] = alphabet[((src[9] & 3) << 3) | ((src[10] & 224) >> 5)];
+  dst[17] = alphabet[src[10] & 31];
+  dst[18] = alphabet[(src[11] & 248) >> 3];
+  dst[19] = alphabet[((src[11] & 7) << 2) | ((src[12] & 192) >> 6)];
+  dst[20] = alphabet[(src[12] & 62) >> 1];
+  dst[21] = alphabet[((src[12] & 1) << 4) | ((src[13] & 240) >> 4)];
+  dst[22] = alphabet[((src[13] & 15) << 1) | ((src[14] & 128) >> 7)];
+  dst[23] = alphabet[(src[14] & 124) >> 2];
+  dst[24] = alphabet[((src[14] & 3) << 3) | ((src[15] & 224) >> 5)];
+  dst[25] = alphabet[src[15] & 31];
+
+  return dst.join("");
+}
+
+export function decode(s: string): Uint8Array {
+  if (s.length !== 26) {
+    throw new Error(
+      `Invalid length. Expected 26 bytes, got ${s.length}. Input: ${s}`
+    );
+  }
+
+  const encoder = new TextEncoder();
+  const v: Uint8Array = encoder.encode(s);
+
+  // Check if all the characters are part of the expected base32 character set.
+  if (
+    dec[v[0]] === 0xff ||
+    dec[v[1]] === 0xff ||
+    dec[v[2]] === 0xff ||
+    dec[v[3]] === 0xff ||
+    dec[v[4]] === 0xff ||
+    dec[v[5]] === 0xff ||
+    dec[v[6]] === 0xff ||
+    dec[v[7]] === 0xff ||
+    dec[v[8]] === 0xff ||
+    dec[v[9]] === 0xff ||
+    dec[v[10]] === 0xff ||
+    dec[v[11]] === 0xff ||
+    dec[v[12]] === 0xff ||
+    dec[v[13]] === 0xff ||
+    dec[v[14]] === 0xff ||
+    dec[v[15]] === 0xff ||
+    dec[v[16]] === 0xff ||
+    dec[v[17]] === 0xff ||
+    dec[v[18]] === 0xff ||
+    dec[v[19]] === 0xff ||
+    dec[v[20]] === 0xff ||
+    dec[v[21]] === 0xff ||
+    dec[v[22]] === 0xff ||
+    dec[v[23]] === 0xff ||
+    dec[v[24]] === 0xff ||
+    dec[v[25]] === 0xff
+  ) {
+    throw new Error("Invalid base32 character");
+  }
+
+  const id = new Uint8Array(16);
+
+  // 6 bytes timestamp (48 bits)
+  id[0] = (dec[v[0]] << 5) | dec[v[1]];
+  id[1] = (dec[v[2]] << 3) | (dec[v[3]] >> 2);
+  id[2] = ((dec[v[3]] & 3) << 6) | (dec[v[4]] << 1) | (dec[v[5]] >> 4);
+  id[3] = ((dec[v[5]] & 15) << 4) | (dec[v[6]] >> 1);
+  id[4] = ((dec[v[6]] & 1) << 7) | (dec[v[7]] << 2) | (dec[v[8]] >> 3);
+  id[5] = ((dec[v[8]] & 7) << 5) | dec[v[9]];
+
+  // 10 bytes of entropy (80 bits)
+  id[6] = (dec[v[10]] << 3) | (dec[v[11]] >> 2);
+  id[7] = ((dec[v[11]] & 3) << 6) | (dec[v[12]] << 1) | (dec[v[13]] >> 4);
+  id[8] = ((dec[v[13]] & 15) << 4) | (dec[v[14]] >> 1);
+  id[9] = ((dec[v[14]] & 1) << 7) | (dec[v[15]] << 2) | (dec[v[16]] >> 3);
+  id[10] = ((dec[v[16]] & 7) << 5) | dec[v[17]];
+  id[11] = (dec[v[18]] << 3) | (dec[v[19]] >> 2);
+  id[12] = ((dec[v[19]] & 3) << 6) | (dec[v[20]] << 1) | (dec[v[21]] >> 4);
+  id[13] = ((dec[v[21]] & 15) << 4) | (dec[v[22]] >> 1);
+  id[14] = ((dec[v[22]] & 1) << 7) | (dec[v[23]] << 2) | (dec[v[24]] >> 3);
+  id[15] = ((dec[v[24]] & 7) << 5) | dec[v[25]];
+
+  return id;
+}

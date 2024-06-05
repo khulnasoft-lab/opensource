@@ -1,0 +1,13 @@
+{
+  "include": [
+    "github:jetify-com/devbox-plugins?dir=go-monorepo"
+  ],
+  "shell": {
+    "scripts": {
+      "update-internal-deps": [
+        "for_each_gomod go get -u go.jetpack.io/pkg@main go.jetify.com/typeid@main || true",
+        "devbox run tidy"
+      ]
+    }
+  }
+}

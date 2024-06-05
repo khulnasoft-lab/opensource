@@ -1,0 +1,7 @@
+{
+  "name": "typeid-sql",
+  "version": "0.1.0",
+  "devDependencies": {
+    "supabase": "^1.153.4"
+  }
+}
