@@ -3,7 +3,7 @@ module go.jetpack.io/envsec
 go 1.21
 
 require (
-	connectrpc.com/connect v1.16.0
+	connectrpc.com/connect v1.16.2
 	github.com/AlecAivazis/survey/v2 v2.3.7
 	github.com/MakeNowJust/heredoc v1.0.0
 	github.com/aws/aws-sdk-go-v2 v1.26.1
