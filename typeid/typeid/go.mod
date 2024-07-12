@@ -5,7 +5,7 @@ go 1.21
 toolchain go1.22.1
 
 require (
-	github.com/spf13/cobra v1.8.0
+	github.com/spf13/cobra v1.8.1
 	go.jetify.com/typeid v1.1.1-0.20240520210211-61dfb24ffdcd
 )
 
