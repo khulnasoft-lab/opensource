@@ -3,7 +3,7 @@ module go.jetpack.io/pkg
 go 1.21
 
 require (
-	connectrpc.com/connect v1.16.0
+	connectrpc.com/connect v1.16.2
 	github.com/cavaliergopher/grab/v3 v3.0.1
 	github.com/codeclysm/extract/v3 v3.1.1
 	github.com/coreos/go-oidc/v3 v3.10.0
