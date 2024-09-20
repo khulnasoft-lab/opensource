@@ -3,7 +3,7 @@ module go.jetpack.io/pkg
 go 1.21
 
 require (
-	connectrpc.com/connect v1.16.0
+	connectrpc.com/connect v1.17.0
 	github.com/cavaliergopher/grab/v3 v3.0.1
 	github.com/codeclysm/extract/v3 v3.1.1
 	github.com/coreos/go-oidc/v3 v3.10.0
@@ -22,7 +22,7 @@ require (
 	github.com/stretchr/testify v1.9.0
 	go.jetify.com/typeid v1.1.0
 	golang.org/x/oauth2 v0.19.0
-	google.golang.org/protobuf v1.33.0
+	google.golang.org/protobuf v1.34.2
 )
 
 require (
