@@ -2,7 +2,7 @@ module go.jetpack.io/typeid-cli
 
 go 1.21
 
-toolchain go1.22.1
+toolchain go1.23.5
 
 require (
 	github.com/spf13/cobra v1.8.0
